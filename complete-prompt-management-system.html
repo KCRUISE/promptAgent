@@ -1,0 +1,1687 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Search, Tag, Copy, Edit, Star, Filter, Save, Trash, Settings, 
+  MessageSquare, Share, Users, Zap, BarChart2, Play, FileText, 
+  ChevronDown, Check, Clock, Award, PenTool, Globe, Info,
+  Plus, ArrowRight, BrainCircuit, Layers, LineChart, PieChart, 
+  UserPlus, Shield, History, Table, CalendarDays, GitBranch,
+  BookOpen, Code, HelpCircle, CheckCircle, Lock, Unlock, Eye, EyeOff,
+  RefreshCcw, Terminal, AlertTriangle, FileCode
+} from 'lucide-react';
+
+const EnhancedPromptSystem = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedPrompt, setSelectedPrompt] = useState(null);
+  const [viewMode, setViewMode] = useState('grid');
+  const [showAIPanel, setShowAIPanel] = useState(false);
+  
+  // 샘플 프롬프트 데이터
+  const prompts = [
+    { 
+      id: 1, 
+      title: '고급 콘텐츠 요약 템플릿', 
+      category: 'summarization', 
+      template: '다음 텍스트를 3-5문장으로 요약해주세요. 핵심 아이디어와 중요한 세부 사항을 포함하세요:\n\n{text}', 
+      tags: ['요약', '콘텐츠'], 
+      usageCount: 243,
+      lastUsed: '2025-03-14',
+      avgRating: 4.8,
+      compatibility: ['GPT-4', 'Claude 3', 'Gemini'],
+      tokenEstimate: 150
+    },
+    { 
+      id: 2, 
+      title: '프로덕트 마케팅 템플릿', 
+      category: 'marketing', 
+      template: '다음 제품에 대한 매력적인 마케팅 카피를 작성해주세요:\n\n제품: {product_name}\n주요 기능: {features}\n타겟 고객: {target_audience}\n\n톤앤보이스: {tone}', 
+      tags: ['마케팅', '카피라이팅', '세일즈'], 
+      usageCount: 172,
+      lastUsed: '2025-03-15',
+      avgRating: 4.5,
+      compatibility: ['GPT-4', 'Claude 3'],
+      tokenEstimate: 200
+    },
+    { 
+      id: 3, 
+      title: '코드 최적화 도우미', 
+      category: 'development', 
+      template: '다음 {language} 코드를 분석하고 성능, 가독성 및 모범 사례 측면에서 최적화 방법을 제안해 주세요:\n\n```{language}\n{code}\n```\n\n코드의 시간 복잡도와 공간 복잡도도 분석해 주세요.', 
+      tags: ['코딩', '개발', '최적화'], 
+      usageCount: 128,
+      lastUsed: '2025-03-12',
+      avgRating: 4.9,
+      compatibility: ['GPT-4', 'Claude 3', 'Gemini'],
+      tokenEstimate: 350
+    },
+  ];
+  
+  // 최근 실행 결과 샘플
+  const recentExecutions = [
+    {
+      id: 101,
+      promptTitle: '고급 콘텐츠 요약 템플릿',
+      aiModel: 'Claude 3',
+      executedAt: '2025-03-15 14:30',
+      inputTokens: 420,
+      outputTokens: 180,
+      cost: 0.012,
+      rating: 5
+    },
+    {
+      id: 102,
+      promptTitle: '프로덕트 마케팅 템플릿',
+      aiModel: 'GPT-4',
+      executedAt: '2025-03-15 11:15',
+      inputTokens: 320,
+      outputTokens: 430,
+      cost: 0.024,
+      rating: 4
+    },
+    {
+      id: 103,
+      promptTitle: '코드 최적화 도우미',
+      aiModel: 'GPT-4',
+      executedAt: '2025-03-14 16:45',
+      inputTokens: 780,
+      outputTokens: 950,
+      cost: 0.055,
+      rating: 5
+    }
+  ];
+
+  // 활성 A/B 테스트 샘플
+  const activeTests = [
+    {
+      id: 201,
+      name: '마케팅 카피 최적화',
+      variants: 3,
+      runningDays: 5,
+      impressions: 324,
+      leadingVariant: 'B',
+      improvement: '+18%'
+    },
+    {
+      id: 202,
+      name: '고객 지원 응대 템플릿',
+      variants: 2,
+      runningDays: 8,
+      impressions: 528,
+      leadingVariant: 'A',
+      improvement: '+7%'
+    }
+  ];
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50">
+      {/* 헤더 */}
+      <header className="bg-white border-b border-gray-200 px-6 py-3">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-blue-600 mr-10">프롬프트 관리 시스템</h1>
+            <nav className="flex space-x-1">
+              <button 
+                onClick={() => setActiveTab('dashboard')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                대시보드
+              </button>
+              <button 
+                onClick={() => setActiveTab('library')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'library' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                라이브러리
+              </button>
+              <button 
+                onClick={() => setActiveTab('editor')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'editor' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                에디터
+              </button>
+              <button 
+                onClick={() => setActiveTab('testing')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'testing' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                테스트
+              </button>
+              <button 
+                onClick={() => setActiveTab('analytics')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'analytics' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                분석
+              </button>
+              <button 
+                onClick={() => setActiveTab('team')}
+                className={`px-4 py-2 rounded-md ${activeTab === 'team' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                팀 관리
+              </button>
+            </nav>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <Search size={20} className="text-gray-500" />
+            </button>
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <Bell size={20} className="text-gray-500" />
+            </button>
+            <div className="border-l border-gray-300 h-8 mx-2"></div>
+            <div className="flex items-center">
+              <img src="/api/placeholder/40/40" className="w-8 h-8 rounded-full" alt="User" />
+              <ChevronDown size={16} className="text-gray-500 ml-1" />
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      {/* 메인 콘텐츠 */}
+      <div className="flex-1 overflow-hidden flex">
+        {/* 왼쪽 사이드바 */}
+        <div className="w-60 bg-white border-r border-gray-200 flex flex-col">
+          <div className="p-4">
+            <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-md text-sm font-medium flex items-center justify-center">
+              <PenTool size={16} className="mr-2" />
+              새 프롬프트 작성
+            </button>
+          </div>
+          
+          <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              카테고리
+            </div>
+            {['모두', '요약', '마케팅', '개발', '비즈니스', '창작', '교육', '고객 지원'].map(category => (
+              <button key={category} className="w-full flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                {category}
+              </button>
+            ))}
+            
+            <div className="border-t border-gray-200 my-2"></div>
+            
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              태그
+            </div>
+            {['요약', '마케팅', '코딩', '데이터 분석', '콘텐츠', '이메일', 'SEO'].map(tag => (
+              <button key={tag} className="w-full flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                <Tag size={14} className="mr-2 text-gray-500" />
+                {tag}
+              </button>
+            ))}
+            
+            <div className="border-t border-gray-200 my-2"></div>
+            
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              AI 모델
+            </div>
+            {['GPT-4', 'Claude 3', 'Gemini', 'GPT-3.5'].map(model => (
+              <button key={model} className="w-full flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                <Zap size={14} className="mr-2 text-gray-500" />
+                {model}
+              </button>
+            ))}
+          </nav>
+        </div>
+        
+        {/* 메인 콘텐츠 영역 */}
+        <div className="flex-1 overflow-y-auto">
+          {activeTab === 'dashboard' && (
+            <div className="p-6">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">대시보드</h2>
+                
+                {/* 통계 카드 */}
+                <div className="grid grid-cols-4 gap-4 mb-6">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center">
+                      <div className="p-3 rounded-full bg-blue-50 text-blue-600 mr-4">
+                        <FileText size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">총 프롬프트</p>
+                        <p className="text-xl font-bold">38</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center">
+                      <div className="p-3 rounded-full bg-green-50 text-green-600 mr-4">
+                        <Play size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">실행 횟수 (이번 달)</p>
+                        <p className="text-xl font-bold">527</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center">
+                      <div className="p-3 rounded-full bg-purple-50 text-purple-600 mr-4">
+                        <Users size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">팀 구성원</p>
+                        <p className="text-xl font-bold">12</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center">
+                      <div className="p-3 rounded-full bg-amber-50 text-amber-600 mr-4">
+                        <Award size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">평균 평점</p>
+                        <p className="text-xl font-bold">4.7/5</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* 최근 실행 내역 */}
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+                  <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-800">최근 실행 내역</h3>
+                    <button className="text-sm text-blue-600 hover:text-blue-800">모두 보기</button>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">프롬프트</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">AI 모델</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">실행 시간</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">토큰</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">비용</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">평가</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {recentExecutions.map(execution => (
+                          <tr key={execution.id} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-sm text-gray-800">{execution.promptTitle}</td>
+                            <td className="px-4 py-3 text-sm text-gray-800">{execution.aiModel}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">{execution.executedAt}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">{execution.inputTokens} / {execution.outputTokens}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">${execution.cost.toFixed(3)}</td>
+                            <td className="px-4 py-3 text-sm">
+                              <div className="flex items-center">
+                                {[...Array(execution.rating)].map((_, i) => (
+                                  <Star key={i} size={14} className="text-amber-400 fill-current" />
+                                ))}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                {/* 활성 A/B 테스트 */}
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                  <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-800">활성 A/B 테스트</h3>
+                    <button className="text-sm text-blue-600 hover:text-blue-800">새 테스트 생성</button>
+                  </div>
+                  {activeTests.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-4 p-4">
+                      {activeTests.map(test => (
+                        <div key={test.id} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex justify-between items-start mb-4">
+                            <h4 className="font-medium text-gray-800">{test.name}</h4>
+                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                              진행 중
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 mb-4">
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">변형</p>
+                              <p className="text-sm font-medium">{test.variants}개</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">실행 일수</p>
+                              <p className="text-sm font-medium">{test.runningDays}일</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">노출 수</p>
+                              <p className="text-sm font-medium">{test.impressions}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-500 mb-1">현재 우수 변형</p>
+                              <p className="text-sm font-medium">변형 {test.leadingVariant} ({test.improvement})</p>
+                            </div>
+                          </div>
+                          <div className="flex justify-end">
+                            <button className="text-sm text-blue-600 hover:text-blue-800">
+                              상세 보기
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-6 text-center text-gray-500">
+                      <p>활성 테스트가 없습니다</p>
+                      <button className="mt-2 text-blue-600 hover:text-blue-800">새 A/B 테스트 생성</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'library' && (
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-800">프롬프트 라이브러리</h2>
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="프롬프트 검색..."
+                      className="pl-9 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                  </div>
+                  <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                    <Filter size={18} className="text-gray-500" />
+                  </button>
+                  <div className="flex border border-gray-300 rounded-md overflow-hidden">
+                    <button 
+                      className={`p-2 ${viewMode === 'grid' ? 'bg-gray-100' : 'bg-white hover:bg-gray-50'}`}
+                      onClick={() => setViewMode('grid')}
+                    >
+                      <LayoutGrid size={18} className="text-gray-500" />
+                    </button>
+                    <button 
+                      className={`p-2 ${viewMode === 'list' ? 'bg-gray-100' : 'bg-white hover:bg-gray-50'}`}
+                      onClick={() => setViewMode('list')}
+                    >
+                      <List size={18} className="text-gray-500" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {prompts.map(prompt => (
+                    <div 
+                      key={prompt.id}
+                      className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="p-4 border-b border-gray-200">
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-medium text-gray-800">{prompt.title}</h3>
+                          <div className="flex items-center text-gray-500 text-sm">
+                            <Star size={14} className="mr-1 text-amber-400 fill-current" />
+                            {prompt.avgRating}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap mt-2">
+                          {prompt.tags.map((tag, i) => (
+                            <span 
+                              key={`${prompt.id}-tag-${i}`} 
+                              className="mr-1 mb-1 px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="p-4">
+                        <div className="text-xs text-gray-500 mb-3">
+                          <div className="flex justify-between mb-1">
+                            <span>카테고리: {prompt.category}</span>
+                            <span>사용 횟수: {prompt.usageCount}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>토큰 추정: ~{prompt.tokenEstimate}</span>
+                            <span>마지막 사용: {prompt.lastUsed}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex mt-4 space-x-2">
+                          <button 
+                            className="flex-1 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50"
+                            onClick={() => setSelectedPrompt(prompt)}
+                          >
+                            상세보기
+                          </button>
+                          <button className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50">
+                            <Copy size={16} />
+                          </button>
+                          <button className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                            <Play size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs">
+                        <div className="flex items-center">
+                          <Globe size={14} className="mr-1 text-gray-500" />
+                          <span className="text-gray-500 mr-2">호환:</span>
+                          <div className="space-x-1">
+                            {prompt.compatibility.map(model => (
+                              <span 
+                                key={`${prompt.id}-${model}`}
+                                className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded"
+                              >
+                                {model}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          제목
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          카테고리
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          태그
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          사용량
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          평점
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          호환 모델
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          액션
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {prompts.map(prompt => (
+                        <tr key={prompt.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="font-medium text-gray-900">{prompt.title}</div>
+                            <div className="text-xs text-gray-500">마지막 사용: {prompt.lastUsed}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                              {prompt.category}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex flex-wrap">
+                              {prompt.tags.map((tag, i) => (
+                                <span 
+                                  key={`${prompt.id}-list-tag-${i}`} 
+                                  className="mr-1 mb-1 px-2 py-0.5 bg-gray-100 text-xs text-gray-600 rounded-full"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {prompt.usageCount}회
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <Star size={14} className="mr-1 text-amber-400 fill-current" />
+                              <span>{prompt.avgRating}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex space-x-1">
+                              {prompt.compatibility.map(model => (
+                                <span 
+                                  key={`${prompt.id}-list-${model}`}
+                                  className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs"
+                                >
+                                  {model}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex justify-end space-x-2">
+                              <button className="p-1 text-gray-500 hover:text-gray-700">
+                                <Copy size={16} />
+                              </button>
+                              <button className="p-1 text-blue-600 hover:text-blue-800">
+                                <Play size={16} />
+                              </button>
+                              <button className="p-1 text-gray-500 hover:text-gray-700">
+                                <Edit size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {activeTab === 'editor' && <EditorTab />}
+          {activeTab === 'testing' && <TestingTab />}
+          {activeTab === 'analytics' && <AnalyticsTab />}
+          {activeTab === 'team' && <TeamTab />}
+        </div>
+        
+        {/* AI 실행 패널 - 조건부 렌더링 */}
+        {showAIPanel && (
+          <div className="w-96 border-l border-gray-200 bg-white flex flex-col overflow-hidden">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="font-medium text-gray-800">AI 실행</h3>
+              <button 
+                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setShowAIPanel(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            
+            {/* AI 모델 선택 */}
+            <div className="p-4 border-b border-gray-200">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                AI 모델 선택
+              </label>
+              <select className="w-full border border-gray-300 rounded-md p-2 text-sm">
+                <option>GPT-4</option>
+                <option>Claude 3</option>
+                <option>Gemini</option>
+                <option>GPT-3.5 Turbo</option>
+              </select>
+            </div>
+            
+            {/* 변수 입력 */}
+            <div className="p-4 border-b border-gray-200">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                변수 입력
+              </label>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">product_name</label>
+                  <input type="text" className="w-full border border-gray-300 rounded-md p-2 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">features</label>
+                  <textarea className="w-full border border-gray-300 rounded-md p-2 text-sm h-20"></textarea>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">target_audience</label>
+                  <input type="text" className="w-full border border-gray-300 rounded-md p-2 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">tone</label>
+                  <select className="w-full border border-gray-300 rounded-md p-2 text-sm">
+                    <option>전문적</option>
+                    <option>친근한</option>
+                    <option>유머러스</option>
+                    <option>공식적</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            {/* 고급 옵션 */}
+            <div className="p-4 border-b border-gray-200">
+              <button className="flex items-center text-sm text-gray-700">
+                <ChevronDown size={16} className="mr-1" />
+                고급 옵션
+              </button>
+            </div>
+            
+            {/* 실행 버튼 */}
+            <div className="p-4 mt-auto border-t border-gray-200">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-xs text-gray-500">예상 토큰: ~350 tokens</span>
+                <span className="text-xs text-gray-500">예상 비용: $0.02</span>
+              </div>
+              <button className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center justify-center">
+                <Play size={16} className="mr-2" />
+                실행하기
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const LayoutGrid = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+    <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+    <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+    <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+  </svg>
+);
+
+export default EnhancedPromptSystem;
+
+const List = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="8" x2="21" y1="6" y2="6"></line>
+    <line x1="8" x2="21" y1="12" y2="12"></line>
+    <line x1="8" x2="21" y1="18" y2="18"></line>
+    <line x1="3" x2="3.01" y1="6" y2="6"></line>
+    <line x1="3" x2="3.01" y1="12" y2="12"></line>
+    <line x1="3" x2="3.01" y1="18" y2="18"></line>
+  </svg>
+);
+
+const Bell = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+  </svg>
+);
+
+const X = ({ size, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M18 6 6 18"></path>
+    <path d="m6 6 12 12"></path>
+  </svg>
+);
+
+// 에디터 탭 컴포넌트
+const EditorTab = () => {
+  const [editorMode, setEditorMode] = useState('create'); // create, edit
+  const [showVariablePanel, setShowVariablePanel] = useState(true);
+  const [currentPrompt, setCurrentPrompt] = useState({
+    title: '',
+    category: '마케팅',
+    template: '',
+    variables: [
+      { name: 'product_name', type: 'text', required: true, description: '제품명을 입력하세요' },
+      { name: 'features', type: 'textarea', required: true, description: '주요 기능을 입력하세요' },
+      { name: 'target_audience', type: 'text', required: true, description: '타겟 고객층을 입력하세요' },
+      { name: 'tone', type: 'select', options: ['전문적', '친근한', '유머러스', '공식적'], required: true, description: '톤앤보이스를 선택하세요' }
+    ],
+    tags: ['마케팅', '카피라이팅'],
+    compatibility: ['GPT-4', 'Claude 3']
+  });
+  
+  const [previewMode, setPreviewMode] = useState(false);
+  
+  // 탭 내 탐색
+  const [editorTab, setEditorTab] = useState('edit'); // edit, test, settings
+  
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-800">
+          {editorMode === 'create' ? '새 프롬프트 생성' : '프롬프트 편집'}
+        </h2>
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => setPreviewMode(!previewMode)}
+            className={`px-3 py-1.5 rounded-md text-sm border ${previewMode ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-gray-300 text-gray-600'}`}
+          >
+            <Eye size={16} className="inline-block mr-1" />
+            미리보기
+          </button>
+          <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+            <RefreshCcw size={16} className="inline-block mr-1" />
+            초기화
+          </button>
+          <button className="px-3 py-1.5 bg-green-600 text-white rounded-md text-sm hover:bg-green-700">
+            <Save size={16} className="inline-block mr-1" />
+            저장
+          </button>
+        </div>
+      </div>
+      
+      {/* 에디터 내부 탭 네비게이션 */}
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="flex space-x-6">
+          <button
+            onClick={() => setEditorTab('edit')}
+            className={`pb-3 px-1 ${editorTab === 'edit' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <Edit size={16} className="inline-block mr-1" />
+            편집
+          </button>
+          <button
+            onClick={() => setEditorTab('test')}
+            className={`pb-3 px-1 ${editorTab === 'test' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <Terminal size={16} className="inline-block mr-1" />
+            테스트
+          </button>
+          <button
+            onClick={() => setEditorTab('settings')}
+            className={`pb-3 px-1 ${editorTab === 'settings' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <Settings size={16} className="inline-block mr-1" />
+            설정
+          </button>
+        </nav>
+      </div>
+      
+      {/* 에디터 메인 콘텐츠 */}
+      <div className="flex gap-6">
+        {/* 왼쪽: 에디터 패널 */}
+        <div className="flex-1">
+          {editorTab === 'edit' && (
+            <>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  프롬프트 제목
+                </label>
+                <input 
+                  type="text" 
+                  value={currentPrompt.title}
+                  onChange={(e) => setCurrentPrompt({...currentPrompt, title: e.target.value})}
+                  placeholder="프롬프트 제목을 입력하세요"
+                  className="w-full border border-gray-300 rounded-md p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    프롬프트 템플릿
+                  </label>
+                  <div className="text-xs text-gray-500">
+                    <Info size={14} className="inline-block mr-1" />
+                    변수는 {"{변수명}"} 형식으로 입력하세요
+                  </div>
+                </div>
+                <textarea 
+                  value={currentPrompt.template}
+                  onChange={(e) => setCurrentPrompt({...currentPrompt, template: e.target.value})}
+                  placeholder="프롬프트 템플릿을 작성하세요..."
+                  className="w-full border border-gray-300 rounded-md p-3 text-sm h-80 font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                ></textarea>
+              </div>
+              
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex space-x-2">
+                  <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+                    <BookOpen size={16} className="inline-block mr-1" />
+                    불러오기
+                  </button>
+                  <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+                    <Code size={16} className="inline-block mr-1" />
+                    변수 삽입
+                  </button>
+                </div>
+                <div>
+                  <span className="text-xs text-gray-500">토큰 추정: 약 240 tokens</span>
+                </div>
+              </div>
+            </>
+          )}
+          
+          {editorTab === 'test' && (
+            <>
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="font-medium text-gray-800">프롬프트 테스트</h3>
+                  <p className="text-sm text-gray-500 mt-1">변수 값을 입력하고 프롬프트를 테스트해보세요</p>
+                </div>
+                
+                <div className="p-4 border-b border-gray-200">
+                  {currentPrompt.variables.map((variable, index) => (
+                    <div key={index} className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {variable.name}
+                        {variable.required && <span className="text-red-500 ml-1">*</span>}
+                      </label>
+                      {variable.type === 'textarea' ? (
+                        <textarea 
+                          placeholder={variable.description}
+                          className="w-full border border-gray-300 rounded-md p-2 text-sm h-24"
+                        ></textarea>
+                      ) : variable.type === 'select' ? (
+                        <select className="w-full border border-gray-300 rounded-md p-2 text-sm">
+                          {variable.options.map((option, i) => (
+                            <option key={i} value={option}>{option}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input 
+                          type="text" 
+                          placeholder={variable.description}
+                          className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="p-4 border-b border-gray-200">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">AI 모델 선택</span>
+                    <span className="text-xs text-gray-500">예상 비용: $0.021</span>
+                  </div>
+                  <select className="w-full border border-gray-300 rounded-md p-2 text-sm mb-4">
+                    <option>GPT-4</option>
+                    <option>Claude 3</option>
+                    <option>Gemini</option>
+                  </select>
+                  
+                  <button className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center justify-center">
+                    <Play size={16} className="mr-2" />
+                    테스트 실행
+                  </button>
+                </div>
+                
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">테스트 결과</span>
+                    <span className="text-xs text-gray-500">GPT-4 · 520 tokens · 0.9s</span>
+                  </div>
+                  <div className="bg-gray-50 rounded-md p-3 h-60 text-sm overflow-y-auto border border-gray-200">
+                    <p className="text-gray-400 italic text-center mt-20">
+                      프롬프트를 실행하면 결과가 여기에 표시됩니다
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          
+          {editorTab === 'settings' && (
+            <>
+              <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="font-medium text-gray-800">프롬프트 설정</h3>
+                  <p className="text-sm text-gray-500 mt-1">메타데이터 및 고급 설정을 구성하세요</p>
+                </div>
+                
+                <div className="p-4 space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      카테고리
+                    </label>
+                    <select 
+                      value={currentPrompt.category}
+                      onChange={(e) => setCurrentPrompt({...currentPrompt, category: e.target.value})}
+                      className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                    >
+                      {['요약', '마케팅', '개발', '비즈니스', '창작', '교육', '고객 지원'].map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      태그
+                    </label>
+                    <div className="flex flex-wrap items-center border border-gray-300 rounded-md p-2 min-h-10">
+                      {currentPrompt.tags.map((tag, i) => (
+                        <span 
+                          key={i}
+                          className="m-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs flex items-center"
+                        >
+                          {tag}
+                          <button 
+                            className="ml-1 text-blue-600 hover:text-blue-800"
+                            onClick={() => {
+                              const newTags = [...currentPrompt.tags];
+                              newTags.splice(i, 1);
+                              setCurrentPrompt({...currentPrompt, tags: newTags});
+                            }}
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                      <input 
+                        type="text" 
+                        placeholder="태그 추가..." 
+                        className="border-0 p-1 text-sm flex-grow min-w-20 focus:outline-none"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && e.target.value) {
+                            setCurrentPrompt({
+                              ...currentPrompt, 
+                              tags: [...currentPrompt.tags, e.target.value]
+                            });
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      호환 모델
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {['GPT-4', 'Claude 3', 'Gemini', 'GPT-3.5'].map(model => (
+                        <label key={model} className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                            checked={currentPrompt.compatibility.includes(model)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setCurrentPrompt({
+                                  ...currentPrompt,
+                                  compatibility: [...currentPrompt.compatibility, model]
+                                });
+                              } else {
+                                setCurrentPrompt({
+                                  ...currentPrompt,
+                                  compatibility: currentPrompt.compatibility.filter(m => m !== model)
+                                });
+                              }
+                            }}
+                          />
+                          <span className="ml-2 text-sm text-gray-700">{model}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      고급 설정
+                    </label>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center border border-gray-200 rounded-md p-3">
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700">접근 권한</h4>
+                          <p className="text-xs text-gray-500">이 프롬프트를 볼 수 있는 사용자 지정</p>
+                        </div>
+                        <select className="border border-gray-300 rounded-md p-1.5 text-sm">
+                          <option>전체 팀</option>
+                          <option>관리자만</option>
+                          <option>특정 사용자</option>
+                        </select>
+                      </div>
+                      
+                      <div className="flex justify-between items-center border border-gray-200 rounded-md p-3">
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700">버전 관리</h4>
+                          <p className="text-xs text-gray-500">이전 버전 저장 및 관리</p>
+                        </div>
+                        <label className="flex items-center">
+                          <input type="checkbox" className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+                          <span className="ml-2 text-sm text-gray-700">활성화</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        
+        {/* 오른쪽: 변수 패널 */}
+        {showVariablePanel && (
+          <div className="w-80 bg-white border border-gray-200 rounded-lg shadow-sm h-fit">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="font-medium text-gray-800">변수 관리</h3>
+              <button onClick={() => setShowVariablePanel(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={18} />
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <div className="mb-4">
+                <button className="w-full py-2 px-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-md text-sm font-medium hover:bg-blue-100">
+                  <Plus size={16} className="inline-block mr-1" />
+                  새 변수 추가
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {currentPrompt.variables.map((variable, index) => (
+                  <div key={index} className="border border-gray-200 rounded-md p-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center">
+                        <span className="font-medium text-sm text-gray-700">{variable.name}</span>
+                        {variable.required && (
+                          <span className="ml-2 px-1.5 py-0.5 bg-red-100 text-red-800 rounded-full text-xs">필수</span>
+                        )}
+                      </div>
+                      <div className="flex space-x-1">
+                        <button className="p-1 text-gray-500 hover:text-gray-700">
+                          <Edit size={14} />
+                        </button>
+                        <button className="p-1 text-gray-500 hover:text-gray-700">
+                          <Trash size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 flex space-x-2 mb-1">
+                      <span className="px-1.5 py-0.5 bg-gray-100 rounded">{variable.type}</span>
+                      {variable.type === 'select' && (
+                        <span className="px-1.5 py-0.5 bg-gray-100 rounded">{variable.options.length} 옵션</span>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-gray-500">{variable.description}</p>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
+                <h4 className="text-xs font-medium text-blue-700 mb-1">변수 사용 방법</h4>
+                <p className="text-xs text-blue-600">
+                  프롬프트 템플릿에 {"{변수명}"} 형식으로 삽입하여 사용하세요.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// 테스트 탭 컴포넌트
+const TestingTab = () => {
+  const [activeTestingTab, setActiveTestingTab] = useState('ab'); // ab, performance, batch
+  
+  // A/B 테스트 샘플 데이터
+  const abTests = [
+    {
+      id: 1,
+      name: '마케팅 카피 최적화',
+      status: 'active',
+      variants: [
+        { id: 'A', name: '기본 버전', impressions: 157, conversions: 23, conversionRate: 14.65 },
+        { id: 'B', name: '수정 버전', impressions: 167, conversions: 32, conversionRate: 19.16 }
+      ],
+      created: '2025-03-10',
+      duration: 10,
+      daysRemaining: 3,
+      promptCategory: '마케팅',
+      createdBy: '김민수'
+    },
+    {
+      id: 2,
+      name: '고객 지원 대응 템플릿',
+      status: 'active',
+      variants: [
+        { id: 'A', name: '공감형', impressions: 243, conversions: 186, conversionRate: 76.54 },
+        { id: 'B', name: '직접형', impressions: 285, conversions: 182, conversionRate: 63.86 }
+      ],
+      created: '2025-03-07',
+      duration: 14,
+      daysRemaining: 4,
+      promptCategory: '고객 지원',
+      createdBy: '박지영'
+    },
+    {
+      id: 3,
+      name: '제품 소개 프롬프트',
+      status: 'completed',
+      variants: [
+        { id: 'A', name: '기능 중심', impressions: 312, conversions: 87, conversionRate: 27.88 },
+        { id: 'B', name: '혜택 중심', impressions: 305, conversions: 126, conversionRate: 41.31 },
+        { id: 'C', name: '사례 중심', impressions: 298, conversions: 95, conversionRate: 31.88 }
+      ],
+      created: '2025-02-25',
+      duration: 14,
+      daysRemaining: 0,
+      promptCategory: '마케팅',
+      createdBy: '이준호'
+    }
+  ];
+  
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-800">프롬프트 테스트</h2>
+        <button className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700">
+          <Plus size={16} className="inline-block mr-1" />
+          새 테스트 생성
+        </button>
+      </div>
+      
+      {/* 테스트 유형 탭 */}
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="flex space-x-6">
+          <button
+            onClick={() => setActiveTestingTab('ab')}
+            className={`pb-3 px-1 ${activeTestingTab === 'ab' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <GitBranch size={16} className="inline-block mr-1" />
+            A/B 테스트
+          </button>
+          <button
+            onClick={() => setActiveTestingTab('performance')}
+            className={`pb-3 px-1 ${activeTestingTab === 'performance' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <BarChart2 size={16} className="inline-block mr-1" />
+            성능 테스트
+          </button>
+          <button
+            onClick={() => setActiveTestingTab('batch')}
+            className={`pb-3 px-1 ${activeTestingTab === 'batch' ? 'border-b-2 border-blue-600 text-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <Layers size={16} className="inline-block mr-1" />
+            일괄 테스트
+          </button>
+        </nav>
+      </div>
+      
+      {activeTestingTab === 'ab' && (
+        <>
+          {/* 필터 및 검색 */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="테스트 검색..."
+                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
+              </div>
+              <select className="border border-gray-300 rounded-md p-2 text-sm">
+                <option>모든 상태</option>
+                <option>활성</option>
+                <option>완료</option>
+                <option>중단됨</option>
+              </select>
+              <select className="border border-gray-300 rounded-md p-2 text-sm">
+                <option>모든 카테고리</option>
+                <option>마케팅</option>
+                <option>고객 지원</option>
+                <option>개발</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                <Filter size={16} className="text-gray-500" />
+              </button>
+              <select className="border border-gray-300 rounded-md p-2 text-sm">
+                <option>최신순</option>
+                <option>오래된순</option>
+                <option>이름순</option>
+              </select>
+            </div>
+          </div>
+          
+          {/* A/B 테스트 목록 */}
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">테스트 이름</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">변형 수</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">상태</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">생성일</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">남은 기간</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">우수 변형</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">액션</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {abTests.map(test => (
+                    <tr key={test.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <div className="text-sm font-medium text-gray-800">{test.name}</div>
+                        <div className="text-xs text-gray-500">{test.promptCategory} · {test.createdBy}</div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-500">{test.variants.length}개 변형</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          test.status === 'active' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {test.status === 'active' ? '활성' : '완료'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-500">{test.created}</td>
+                      <td className="px-4 py-3 text-sm text-gray-500">
+                        {test.daysRemaining > 0 ? `${test.daysRemaining}일 남음` : '완료됨'}
+                      </td>
+                      <td className="px-4 py-3">
+                        {(() => {
+                          const bestVariant = [...test.variants].sort((a, b) => b.conversionRate - a.conversionRate)[0];
+                          const worstVariant = [...test.variants].sort((a, b) => a.conversionRate - b.conversionRate)[0];
+                          const improvement = ((bestVariant.conversionRate - worstVariant.conversionRate) / worstVariant.conversionRate * 100).toFixed(1);
+                          
+                          return (
+                            <div className="text-sm">
+                              <span className="font-medium text-blue-600">변형 {bestVariant.id}</span>
+                              <span className="ml-1 text-green-600">+{improvement}%</span>
+                            </div>
+                          );
+                        })()}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <div className="flex justify-center space-x-1">
+                          <button className="p-1 text-gray-500 hover:text-gray-700" title="상세 보기">
+                            <Eye size={16} />
+                          </button>
+                          <button className="p-1 text-gray-500 hover:text-gray-700" title="복제">
+                            <Copy size={16} />
+                          </button>
+                          <button className="p-1 text-gray-500 hover:text-gray-700" title="종료">
+                            <CheckCircle size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          {/* 선택된 테스트 상세 */}
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="font-semibold text-gray-800">마케팅 카피 최적화 - 상세 결과</h3>
+              <div className="flex items-center space-x-2">
+                <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+                  <Edit size={16} className="inline-block mr-1" />
+                  수정
+                </button>
+                <button className="px-3 py-1.5 bg-green-600 text-white rounded-md text-sm hover:bg-green-700">
+                  <CheckCircle size={16} className="inline-block mr-1" />
+                  승자 선택
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-4">
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="font-medium text-gray-800">변형 A (기본 버전)</h4>
+                      <p className="text-sm text-gray-500 mt-1">기존 마케팅 카피 템플릿</p>
+                    </div>
+                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
+                      기준
+                    </span>
+                  </div>
+                  
+                  <div className="bg-gray-50 border border-gray-200 rounded p-3 text-sm mb-4 max-h-32 overflow-y-auto">
+                    <code className="text-xs whitespace-pre-line">
+                      다음 제품에 대한 매력적인 마케팅 카피를 작성해주세요:
+                      
+                      제품: {"{product_name}"}
+                      주요 기능: {"{features}"}
+                      타겟 고객: {"{target_audience}"}
+                      
+                      톤앤보이스: {"{tone}"}
+                    </code>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3 text-center mb-4">
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">노출 수</p>
+                      <p className="text-lg font-bold text-gray-800">157</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">전환 수</p>
+                      <p className="text-lg font-bold text-gray-800">23</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">전환율</p>
+                      <p className="text-lg font-bold text-gray-800">14.65%</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="font-medium text-gray-800">변형 B (수정 버전)</h4>
+                      <p className="text-sm text-gray-500 mt-1">고객 중심 마케팅 카피 템플릿</p>
+                    </div>
+                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                      우수 변형 (+30.8%)
+                    </span>
+                  </div>
+                  
+                  <div className="bg-white border border-gray-200 rounded p-3 text-sm mb-4 max-h-32 overflow-y-auto">
+                    <code className="text-xs whitespace-pre-line">
+                      다음 제품에 대해 고객의 문제점과 해결책을 중심으로 마케팅 카피를 작성해주세요:
+                      
+                      제품: {"{product_name}"}
+                      주요 기능: {"{features}"}
+                      타겟 고객: {"{target_audience}"}
+                      고객 문제점: {"{pain_points}"}
+                      
+                      톤앤보이스: {"{tone}"}
+                    </code>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3 text-center mb-4">
+                    <div className="bg-white rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">노출 수</p>
+                      <p className="text-lg font-bold text-gray-800">167</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">전환 수</p>
+                      <p className="text-lg font-bold text-gray-800">32</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <p className="text-xs text-gray-500 mb-1">전환율</p>
+                      <p className="text-lg font-bold text-blue-700">19.16%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-800 mb-3">일일 성능 추이</h4>
+                <div className="h-64 bg-gray-50 rounded flex items-center justify-center">
+                  <p className="text-gray-400">여기에 시간에 따른 성능 차트가 표시됩니다</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      
+      {activeTestingTab === 'performance' && (
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+          <h3 className="font-semibold text-gray-800 mb-4">성능 테스트</h3>
+          <p className="text-gray-500 mb-6">다양한 모델과 설정으로 프롬프트 성능을 테스트하고 비교하세요.</p>
+          
+          <div className="grid grid-cols-3 gap-6 mb-6">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                테스트할 프롬프트
+              </label>
+              <select className="w-full border border-gray-300 rounded-md p-2.5 text-sm mb-4">
+                <option>고급 콘텐츠 요약 템플릿</option>
+                <option>프로덕트 마케팅 템플릿</option>
+                <option>코드 최적화 도우미</option>
+              </select>
+              
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                테스트할 모델
+              </label>
+              <div className="space-y-2 mb-4">
+                {['GPT-4', 'GPT-3.5', 'Claude 3', 'Gemini'].map(model => (
+                  <label key={model} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">{model}</span>
+                  </label>
+                ))}
+              </div>
+              
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                테스트 샘플 데이터
+              </label>
+              <textarea
+                placeholder="테스트에 사용할 샘플 데이터를 입력하세요..."
+                className="w-full border border-gray-300 rounded-md p-3 text-sm h-32"
+              ></textarea>
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">테스트 설정</h4>
+              <div className="space-y-4 border border-gray-200 rounded-lg p-4">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">
+                    테스트 횟수
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    defaultValue="3"
+                    className="w-full border border-gray-300 rounded-md p-2 text-sm"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">
+                    평가 기준
+                  </label>
+                  <div className="space-y-2">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">응답 시간</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">토큰 사용량</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        defaultChecked
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">정확도</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">
+                    온도 (Temperature)
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    defaultValue="0.7"
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>0 (결정적)</span>
+                    <span>1 (창의적)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <button className="w-full py-2 mt-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center justify-center">
+                <Play size={16} className="mr-2" />
+                성능 테스트 실행
+              </button>
+            </div>
+          </div>
+          
+          <div className="border border-gray-200 rounded-lg">
+            <div className="p-4 border-b border-gray-200">
+              <h4 className="font-medium text-gray-800">테스트 결과</h4>
+            </div>
+            <div className="p-6 text-center">
+              <AlertTriangle size={32} className="mx-auto text-gray-300 mb-2" />
+              <p className="text-gray-500">아직 테스트 결과가 없습니다.</p>
+              <p className="text-sm text-gray-400 mt-1">테스트를 실행하면 결과가 여기에 표시됩니다.</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// 분석 탭 컴포넌트
+const AnalyticsTab = () => {
+  const [dateRange, setDateRange] = useState('month'); // week, month, quarter, custom
+  const [analyticView, setAnalyticView] = useState('usage'); // usage, performance, cost, quality
+  
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-800">프롬프트 분석</h2>
+        <div className="flex items-center space-x-2">
+          <div className="flex border border-gray-300 rounded-md overflow-hidden">
+            <button 
+              onClick={() => setDateRange('week')}
+              className={`px-3 py-1.5 text-sm ${dateRange === 'week' ? 'bg-gray-100 font-medium' : 'bg-white'}`}
+            >
+              주간
+            </button>
+            <button 
+              onClick={() => setDateRange('month')}
+              className={`px-3 py-1.5 text-sm ${dateRange === 'month' ? 'bg-gray-100 font-medium' : 'bg-white'}`}
+            >
+              월간
+            </button>
+            <button 
+              onClick={() => setDateRange('quarter')}
+              className={`px-3 py-1.5 text-sm ${dateRange === 'quarter' ? 'bg-gray-100 font-medium' : 'bg-white'}`}
+            >
+              분기
+            </button>
+            <button 
+              onClick={() => setDateRange('custom')}
+              className={`px-3 py-1.5 text-sm ${dateRange === 'custom' ? 'bg-gray-100 font-medium' : 'bg-white'}`}
+            >
+              사용자 지정
+            </button>
+          </div>
+          <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+            <CalendarDays size={16} className="text-gray-500" />
+          </button>
+          <button className="px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+            <Share size={16} className="inline-block mr-1" />
+            내보내기
+          </button>
+        </div>
+      </div>
+      
+      {/* 분석 지표 카드 */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <div 
+          className={`bg-white p-4 rounded-lg border ${analyticView === 'usage' ? 'border-blue-300 ring-1 ring-blue-300' : 'border-gray-200'} shadow-sm cursor-pointer`}
+          onClick={() => setAnalyticView('usage')}
+        >
+          <div className="flex items-center">
+            <div className={`p-3 rounded-full ${analyticView === 'usage' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'} mr-4`}>
+              <BrainCircuit size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">총 실행 횟수</p>
+              <p className="text-xl font-bold">1,247</p>
+              <p className="text-xs text-green-600">
+                <ArrowRight size={12} className="inline-block -rotate-45 mr-1" />
+                전월 대비 +12.3%
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={`bg-white p-4 rounded-lg border ${analyticView === 'performance' ? 'border-blue-300 ring-1 ring-blue-300' : 'border-gray-200'} shadow-sm cursor-pointer`}
+          onClick={() => setAnalyticView('performance')}
+        >
+          <div className="flex items-center">
+            <div className={`p-3 rounded-full ${analyticView === 'performance' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'} mr-4`}>
+              <BarChart2 size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">평균 성능 점수</p>
+              <p className="text-xl font-bold">8.7/10</p>
+              <p className="text-xs text-green-600">
+                <ArrowRight size={12} className="inline-block -rotate-45 mr-1" />
+                전월 대비 +0.5
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={`bg-white p-4 rounded-lg border ${analyticView === 'cost' ? 'border-blue-300 ring-1 ring-blue-300' : 'border-gray-200'} shadow-sm cursor-pointer`}
+          onClick={() => setAnalyticView('cost')}
+        >
+          <div className="flex items-center">
+            <div className={`p-3 rounded-full ${analyticView === 'cost' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'} mr-4`}>
+              <FileCode size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">총 토큰 사용량</p>
+              <p className="text-xl font-bold">432K</p>
+              <p className="text-xs text-red-600">
+                <ArrowRight size={12} className="inline-block rotate-45 mr-1" />
+                전월 대비 +18.5%
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div 
+          className={`bg-white p-4 rounded-lg border ${analyticView === 'quality' ? 'border-blue-300 ring-1 ring-blue-300' : 'border-gray-200'} shadow-sm cursor-pointer`}
+          onClick={() => setAnalyticView('quality')}
+        >
+          <div className="flex items-center">
+            <div className={`p-3 rounded-full ${analyticView === 'quality' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'} mr-4`}>
+              <CheckCircle size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">평균 평점</p>
+              <p className="text-xl font-bold">4.8/5</p>
+              <p className="text-xs text-green-600">
+                <ArrowRight size={12} className="inline-block -rotate-45 mr-1" />
+                전월 대비 +0.2
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* 메인 차트 */}
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-6">
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">
+            {analyticView === 'usage' && '프롬프트 사용량 추이'}
+            {analyticView === 'performance' && '프롬프트 성능 메트릭'}
+            {analyticView === 'cost' && '토큰 사용량 및 비용'}
+            {analyticView === 'quality' && '프롬프트 품질 점수'}
+          </h3>
+          <div className="flex items-center space-x-2">
+            <select className="border border-gray-300 rounded-md p-1.5 text-sm">
+              <option>모든 프롬프트</option>
+              <option>요약 프롬프트</option>
+              <option>마케팅 프롬프트</option>
+              <option>개발 프롬프트</option>
+            </select>
+            <select className="border border-gray-300 rounded-md p-1.5 text-sm">
+              <option>모든 모델</option>
+              <option>GPT-4</option>
+              <option>Claude 3</option>
+              <option>Gemini</option>
+            </select>
+            <button className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-50">
+              <Filter size={16} className="text-gray-500" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="p-4">
+          <div className="h-80 bg-gray-50 rounded-lg flex items-center justify-center">
+            <p className="text-gray-400">
+              {analyticView === 'usage' && '프롬프트 일별/주별 사용량 차트가 표시됩니다'}
+              {analyticView === 'performance' && '프롬프트 성능 메트릭 차트가 표시됩니다'}
+              {analyticView === 'cost' && '토큰 사용량 및 비용 차트가 표시됩니다'}
+              {analyticView === 'quality' && '프롬프트 품질 점수 차트가 표시됩니다'}
