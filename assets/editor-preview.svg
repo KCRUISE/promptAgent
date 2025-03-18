@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="#f8fafc" rx="10" ry="10"/>
+  
+  <!-- 앱 프레임 -->
+  <rect x="10" y="10" width="780" height="430" rx="8" ry="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- 헤더 -->
+  <rect x="10" y="10" width="780" height="50" rx="8" ry="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="30" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#3b82f6">프롬프트 관리 시스템</text>
+  
+  <!-- 내비게이션 -->
+  <text x="250" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">대시보드</text>
+  <text x="320" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">라이브러리</text>
+  
+  <rect x="370" y="20" width="80" height="30" rx="15" ry="15" fill="#ebf5ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="410" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#3b82f6">에디터</text>
+  
+  <text x="470" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">테스트</text>
+  <text x="530" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">분석</text>
+  <text x="590" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">팀 관리</text>
+  
+  <!-- 메인 콘텐츠 영역 -->
+  <g transform="translate(20, 70)">
+    <!-- 타이틀 및 액션 버튼 -->
+    <text x="10" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b">새 프롬프트 생성</text>
+    
+    <g transform="translate(600, 0)">
+      <rect x="0" y="0" width="80" height="30" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="40" y="20" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">미리보기</text>
+      
+      <rect x="90" y="0" width="80" height="30" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="130" y="20" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">초기화</text>
+      
+      <rect x="180" y="0" width="80" height="30" rx="4" ry="4" fill="#10b981"/>
+      <text x="220" y="20" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">저장</text>
+    </g>
+    
+    <!-- 에디터 내비게이션 -->
+    <g transform="translate(0, 40)">
+      <line x1="0" y1="25" x2="760" y2="25" stroke="#e2e8f0" stroke-width="1"/>
+      
+      <text x="15" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3b82f6">편집</text>
+      <line x1="0" y1="25" x2="40" y2="25" stroke="#3b82f6" stroke-width="2"/>
+      
+      <text x="80" y="18" font-family="Arial, sans-serif" font-size="14" fill="#64748b">테스트</text>
+      <text x="140" y="18" font-family="Arial, sans-serif" font-size="14" fill="#64748b">설정</text>
+    </g>
+    
+    <!-- 에디터 메인 콘텐츠 -->
+    <g transform="translate(0, 80)">
+      <!-- 왼쪽 패널: 에디터 -->
+      <g>
+        <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">프롬프트 제목</text>
+        <rect x="0" y="25" width="500" height="35" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <text x="10" y="48" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8">프롬프트 제목을 입력하세요</text>
+        
+        <g transform="translate(0, 70)">
+          <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">프롬프트 템플릿</text>
+          <text x="450" y="15" font-family="Arial, sans-serif" font-size="10" fill="#64748b">변수는 {변수명} 형식으로 입력하세요</text>
+          
+          <rect x="0" y="25" width="500" height="200" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+          <text x="10" y="45" font-family="monospace" font-size="12" fill="#1e293b">다음 제품에 대한 매력적인 마케팅 카피를 작성해주세요:</text>
+          <text x="10" y="65" font-family="monospace" font-size="12" fill="#1e293b"></text>
+          <text x="10" y="85" font-family="monospace" font-size="12" fill="#1e293b">제품: {product_name}</text>
+          <text x="10" y="105" font-family="monospace" font-size="12" fill="#1e293b">주요 기능: {features}</text>
+          <text x="10" y="125" font-family="monospace" font-size="12" fill="#1e293b">타겟 고객: {target_audience}</text>
+          <text x="10" y="145" font-family="monospace" font-size="12" fill="#1e293b"></text>
+          <text x="10" y="165" font-family="monospace" font-size="12" fill="#1e293b">톤앤보이스: {tone}</text>
+        </g>
+      </g>
+      
+      <!-- 오른쪽 패널: 변수 관리 -->
+      <g transform="translate(520, 0)">
+        <rect x="0" y="0" width="240" height="280" rx="5" ry="5" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <rect x="0" y="0" width="240" height="40" rx="5" ry="5" fill="#f8fafc"/>
+        <text x="15" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">변수 관리</text>
+        
+        <rect x="10" y="50" width="220" height="35" rx="4" ry="4" fill="#ebf5ff" stroke="#bfdbfe" stroke-width="1"/>
+        <text x="110" y="72" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#3b82f6">새 변수 추가</text>
+        
+        <!-- 변수 1 -->
+        <rect x="10" y="95" width="220" height="50" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <text x="20" y="115" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">product_name</text>
+        <rect x="110" y="105" width="35" height="16" rx="8" ry="8" fill="#fee2e2"/>
+        <text x="127" y="116" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#ef4444">필수</text>
+        <text x="20" y="130" font-family="Arial, sans-serif" font-size="10" fill="#64748b">text · 제품명을 입력하세요</text>
+        
+        <!-- 변수 2 -->
+        <rect x="10" y="155" width="220" height="50" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <text x="20" y="175" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">features</text>
+        <rect x="75" y="165" width="35" height="16" rx="8" ry="8" fill="#fee2e2"/>
+        <text x="92" y="176" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#ef4444">필수</text>
+        <text x="20" y="190" font-family="Arial, sans-serif" font-size="10" fill="#64748b">textarea · 주요 기능을 입력하세요</text>
+        
+        <!-- 더 많은 변수 (간략화) -->
+        <rect x="10" y="215" width="220" height="50" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <text x="20" y="235" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">tone</text>
+        <rect x="60" y="225" width="35" height="16" rx="8" ry="8" fill="#fee2e2"/>
+        <text x="77" y="236" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#ef4444">필수</text>
+        <text x="20" y="250" font-family="Arial, sans-serif" font-size="10" fill="#64748b">select · 4 옵션</text>
+      </g>
+    </g>
+  </g>
+</svg>

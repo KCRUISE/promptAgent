@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- 배경 -->
+  <rect width="800" height="400" fill="#f8fafc" rx="20" ry="20"/>
+  
+  <!-- 신한라이프 원형 배경 그라디언트 -->
+  <defs>
+    <linearGradient id="shinhanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c5ce7" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#5b47e5" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <circle cx="400" cy="200" r="180" fill="url(#shinhanGradient)"/>
+  
+  <!-- 장식적 요소 - 점들 -->
+  <g opacity="0.3">
+    <circle cx="50" cy="50" r="5" fill="#6c5ce7"/>
+    <circle cx="50" cy="350" r="5" fill="#6c5ce7"/>
+    <circle cx="750" cy="50" r="5" fill="#6c5ce7"/>
+    <circle cx="750" cy="350" r="5" fill="#6c5ce7"/>
+    
+    <!-- 점선 패턴 -->
+    <g fill="#6c5ce7">
+      <circle cx="100" cy="100" r="2"/>
+      <circle cx="120" cy="100" r="2"/>
+      <circle cx="140" cy="100" r="2"/>
+      <circle cx="160" cy="100" r="2"/>
+      <circle cx="180" cy="100" r="2"/>
+      
+      <circle cx="620" cy="100" r="2"/>
+      <circle cx="640" cy="100" r="2"/>
+      <circle cx="660" cy="100" r="2"/>
+      <circle cx="680" cy="100" r="2"/>
+      <circle cx="700" cy="100" r="2"/>
+      
+      <circle cx="100" cy="300" r="2"/>
+      <circle cx="120" cy="300" r="2"/>
+      <circle cx="140" cy="300" r="2"/>
+      <circle cx="160" cy="300" r="2"/>
+      <circle cx="180" cy="300" r="2"/>
+      
+      <circle cx="620" cy="300" r="2"/>
+      <circle cx="640" cy="300" r="2"/>
+      <circle cx="660" cy="300" r="2"/>
+      <circle cx="680" cy="300" r="2"/>
+      <circle cx="700" cy="300" r="2"/>
+    </g>
+  </g>
+  
+  <!-- 로고 아이콘 중앙에 배치 -->
+  <g transform="translate(270, 130)">
+    <rect x="10" y="10" width="130" height="130" rx="20" ry="20" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- AI 프롬프트 시각화 (대화창 형태) -->
+    <rect x="30" y="40" width="90" height="20" rx="10" ry="10" fill="#6c5ce7" opacity="0.9"/>
+    <rect x="30" y="70" width="70" height="20" rx="10" ry="10" fill="#6c5ce7" opacity="0.9"/>
+    <rect x="40" y="100" width="80" height="20" rx="10" ry="10" fill="#6c5ce7" opacity="0.9"/>
+    
+    <!-- 관리 시스템 시각화 (체크 아이콘) -->
+    <circle cx="150" cy="80" r="30" fill="#ffffff" opacity="0.9"/>
+    <path d="M135,80 L145,90 L165,70" stroke="#6c5ce7" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- 텍스트 -->
+  <g>
+    <text x="400" y="270" font-family="Arial, sans-serif" font-size="38" font-weight="bold" text-anchor="middle" fill="#ffffff">프롬프트 관리 시스템</text>
+    <text x="400" y="310" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#ffffff">Shinhan Life · Prompt Management System</text>
+  </g>
+  
+  <!-- 신한라이프 로고 스타일 오른쪽 상단 -->
+  <g transform="translate(600, 70)">
+    <rect x="38" y="-7" width="25" height="25" fill="#ffffff"/>
+  </g>
+  
+  <!-- 하단 아이콘 -->
+  <g transform="translate(335, 330)">
+    <!-- 아이콘들을 연결하는 선 -->
+    <line x1="0" y1="20" x2="130" y2="20" stroke="#ffffff" stroke-width="2" stroke-opacity="0.5"/>
+    
+    <!-- 아이콘 1 -->
+    <circle cx="0" cy="20" r="15" fill="#ffffff" opacity="0.8"/>
+    <text x="0" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6c5ce7">1</text>
+    
+    <!-- 아이콘 2 -->
+    <circle cx="45" cy="20" r="15" fill="#ffffff" opacity="0.8"/>
+    <text x="45" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6c5ce7">2</text>
+    
+    <!-- 아이콘 3 -->
+    <circle cx="90" cy="20" r="15" fill="#ffffff" opacity="0.8"/>
+    <text x="90" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6c5ce7">3</text>
+    
+    <!-- 아이콘 4 -->
+    <circle cx="135" cy="20" r="15" fill="#ffffff" opacity="0.8"/>
+    <text x="135" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#6c5ce7">4</text>
+  </g>
+  
+  <!-- 버전 표시 -->
+  <text x="780" y="380" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#6c5ce7">v1.0.0</text>
+</svg>

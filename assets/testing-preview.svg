@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <!-- 배경 -->
+  <rect width="800" height="450" fill="#f8fafc" rx="10" ry="10"/>
+  
+  <!-- 앱 프레임 -->
+  <rect x="10" y="10" width="780" height="430" rx="8" ry="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- 헤더 -->
+  <rect x="10" y="10" width="780" height="50" rx="8" ry="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="30" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#3b82f6">프롬프트 관리 시스템</text>
+  
+  <!-- 내비게이션 -->
+  <text x="250" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">대시보드</text>
+  <text x="320" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">라이브러리</text>
+  <text x="390" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">에디터</text>
+  
+  <rect x="440" y="20" width="80" height="30" rx="15" ry="15" fill="#ebf5ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="480" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#3b82f6">테스트</text>
+  
+  <text x="530" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">분석</text>
+  <text x="590" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">팀 관리</text>
+  
+  <!-- 메인 콘텐츠 영역 -->
+  <g transform="translate(20, 70)">
+    <!-- 타이틀 및 액션 버튼 -->
+    <text x="10" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b">프롬프트 테스트</text>
+    
+    <rect x="660" y="0" width="100" height="30" rx="4" ry="4" fill="#3b82f6"/>
+    <text x="710" y="20" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">새 테스트 생성</text>
+    
+    <!-- 테스트 내비게이션 -->
+    <g transform="translate(0, 40)">
+      <line x1="0" y1="25" x2="760" y2="25" stroke="#e2e8f0" stroke-width="1"/>
+      
+      <text x="15" y="18" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3b82f6">A/B 테스트</text>
+      <line x1="0" y1="25" x2="75" y2="25" stroke="#3b82f6" stroke-width="2"/>
+      
+      <text x="110" y="18" font-family="Arial, sans-serif" font-size="14" fill="#64748b">성능 테스트</text>
+      <text x="210" y="18" font-family="Arial, sans-serif" font-size="14" fill="#64748b">일괄 테스트</text>
+    </g>
+    
+    <!-- 필터 영역 -->
+    <g transform="translate(0, 80)">
+      <rect x="0" y="0" width="200" height="35" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="30" y="22" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8">테스트 검색...</text>
+      
+      <rect x="210" y="0" width="110" height="35" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="265" y="22" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#1e293b">모든 상태</text>
+      
+      <rect x="330" y="0" width="130" height="35" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="395" y="22" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#1e293b">모든 카테고리</text>
+      
+      <rect x="680" y="0" width="80" height="35" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="720" y="22" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#1e293b">최신순</text>
+    </g>
+    
+    <!-- A/B 테스트 목록 -->
+    <g transform="translate(0, 125)">
+      <rect x="0" y="0" width="760" height="120" rx="5" ry="5" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      
+      <!-- 테이블 헤더 -->
+      <rect x="0" y="0" width="760" height="30" rx="5" ry="5" fill="#f8fafc"/>
+      <text x="20" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">테스트 이름</text>
+      <text x="200" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">변형 수</text>
+      <text x="270" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">상태</text>
+      <text x="340" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">생성일</text>
+      <text x="420" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">남은 기간</text>
+      <text x="510" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">우수 변형</text>
+      <text x="620" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#64748b">액션</text>
+      
+      <!-- 테이블 행 1 -->
+      <line x1="0" y1="30" x2="760" y2="30" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="20" y="50" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">마케팅 카피 최적화</text>
+      <text x="20" y="65" font-family="Arial, sans-serif" font-size="10" fill="#64748b">마케팅 · 김민수</text>
+      
+      <text x="200" y="55" font-family="Arial, sans-serif" font-size="12" fill="#64748b">2개 변형</text>
+      
+      <rect x="270" y="45" width="50" height="20" rx="10" ry="10" fill="#ecfdf5"/>
+      <text x="295" y="59" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#10b981">활성</text>
+      
+      <text x="340" y="55" font-family="Arial, sans-serif" font-size="12" fill="#64748b">2025-03-10</text>
+      <text x="420" y="55" font-family="Arial, sans-serif" font-size="12" fill="#64748b">3일 남음</text>
+      
+      <text x="510" y="55" font-family="Arial, sans-serif" font-size="12" fill="#3b82f6">변형 B</text>
+      <text x="550" y="55" font-family="Arial, sans-serif" font-size="12" fill="#10b981">+30.8%</text>
+      
+      <text x="620" y="55" font-family="Arial, sans-serif" font-size="16" fill="#64748b">👁️ 📋 ✓</text>
+      
+      <!-- 테이블 행 2 -->
+      <line x1="0" y1="75" x2="760" y2="75" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="20" y="95" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">고객 지원 대응 템플릿</text>
+      <text x="20" y="110" font-family="Arial, sans-serif" font-size="10" fill="#64748b">고객 지원 · 박지영</text>
+      
+      <text x="200" y="95" font-family="Arial, sans-serif" font-size="12" fill="#64748b">2개 변형</text>
+      
+      <rect x="270" y="85" width="50" height="20" rx="10" ry="10" fill="#ecfdf5"/>
+      <text x="295" y="99" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#10b981">활성</text>
+      
+      <text x="340" y="95" font-family="Arial, sans-serif" font-size="12" fill="#64748b">2025-03-07</text>
+      <text x="420" y="95" font-family="Arial, sans-serif" font-size="12" fill="#64748b">4일 남음</text>
+      
+      <text x="510" y="95" font-family="Arial, sans-serif" font-size="12" fill="#3b82f6">변형 A</text>
+      <text x="550" y="95" font-family="Arial, sans-serif" font-size="12" fill="#10b981">+7.0%</text>
+      
+      <text x="620" y="95" font-family="Arial, sans-serif" font-size="16" fill="#64748b">👁️ 📋 ✓</text>
+    </g>
+    
+    <!-- 테스트 상세 결과 -->
+    <g transform="translate(0, 255)">
+      <rect x="0" y="0" width="760" height="175" rx="5" ry="5" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <rect x="0" y="0" width="760" height="35" rx="5" ry="5" fill="#f8fafc"/>
+      <text x="20" y="22" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">마케팅 카피 최적화 - 상세 결과</text>
+      
+      <rect x="620" y="5" width="60" height="25" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="650" y="22" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">수정</text>
+      
+      <rect x="690" y="5" width="60" height="25" rx="4" ry="4" fill="#10b981"/>
+      <text x="720" y="22" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">승자 선택</text>
+      
+      <!-- 변형 비교 -->
+      <g transform="translate(15, 45)">
+        <!-- 변형 A -->
+        <rect x="0" y="0" width="350" height="120" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        <text x="15" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">변형 A (기본 버전)</text>
+        <rect x="290" y="5" width="50" height="20" rx="10" ry="10" fill="#fff7ed"/>
+        <text x="315" y="19" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#f59e0b">기준</text>
+        
+        <rect x="15" y="30" width="320" height="50" rx="4" ry="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+        
+        <g transform="translate(15, 90)">
+          <rect x="0" y="0" width="100" height="25" rx="3" ry="3" fill="#f8fafc"/>
+          <text x="50" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#64748b">노출: 157</text>
+          
+          <rect x="110" y="0" width="100" height="25" rx="3" ry="3" fill="#f8fafc"/>
+          <text x="160" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#64748b">전환: 23</text>
+          
+          <rect x="220" y="0" width="100" height="25" rx="3" ry="3" fill="#f8fafc"/>
+          <text x="270" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#64748b">전환율: 14.65%</text>
+        </g>
+        
+        <!-- 변형 B -->
+        <rect x="370" y="0" width="350" height="120" rx="4" ry="4" fill="#ebf5ff" stroke="#bfdbfe" stroke-width="1"/>
+        <text x="385" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">변형 B (수정 버전)</text>
+        <rect x="640" y="5" width="70" height="20" rx="10" ry="10" fill="#ecfdf5"/>
+        <text x="675" y="19" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#10b981">우수 변형 (+30.8%)</text>
+        
+        <rect x="385" y="30" width="320" height="50" rx="4" ry="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+        
+        <g transform="translate(385, 90)">
+          <rect x="0" y="0" width="100" height="25" rx="3" ry="3" fill="white"/>
+          <text x="50" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#64748b">노출: 167</text>
+          
+          <rect x="110" y="0" width="100" height="25" rx="3" ry="3" fill="white"/>
+          <text x="160" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#64748b">전환: 32</text>
+          
+          <rect x="220" y="0" width="100" height="25" rx="3" ry="3" fill="white"/>
+          <text x="270" y="15" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">전환율: 19.16%</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
