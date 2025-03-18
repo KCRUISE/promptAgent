@@ -1,6 +1,6 @@
 # 프롬프트 관리 시스템 (Prompt Management System)
 
-![프롬프트 관리 시스템 로고](./assets/prompt-management-logo.svg)
+![프롬프트 관리 시스템 로고](./assets/shinhanlife-prompt-system-logo.svg)
 
 대규모 언어 모델(LLM)용 프롬프트를 생성, 테스트, 분석 및 관리하기 위한 종합적인 웹 기반 솔루션입니다.
 
