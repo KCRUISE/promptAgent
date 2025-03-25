@@ -2,7 +2,7 @@ import React from 'react';
 import { FileText, Play, Users, Award, Star, Eye, CheckCircle, Copy } from 'lucide-react';
 
 const Dashboard = () => {
-  // 최근 실행 내역 샘플 데이터
+  // 최근 실행 내역 샘플 데이터 
   const recentExecutions = [
     {
       id: 1,
