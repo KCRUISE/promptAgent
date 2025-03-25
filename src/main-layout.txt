@@ -1,0 +1,248 @@
+import React, { useState, ReactNode } from 'react';
+import { 
+  LayoutDashboard, 
+  FileText, 
+  LibrarySquare, 
+  Beaker, 
+  BarChart2, 
+  Users, 
+  Settings, 
+  Menu, 
+  X, 
+  ChevronDown,
+  ChevronRight,
+  LogOut
+} from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+
+// 메뉴 아이템 타입 정의
+type MenuItem = {
+  name: string;
+  path: string;
+  icon: ReactNode;
+  subItems?: { name: string; path: string }[];
+  adminOnly?: boolean;
+};
+
+// MainLayout 컴포넌트 Props 타입 정의
+type MainLayoutProps = {
+  children: ReactNode;
+};
+
+const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+  const location = useLocation();
+  
+  // 메뉴 아이템 정의
+  const menuItems: MenuItem[] = [
+    {
+      name: '대시보드',
+      path: '/',
+      icon: <LayoutDashboard size={20} />
+    },
+    {
+      name: '프롬프트 관리',
+      path: '/prompts',
+      icon: <FileText size={20} />,
+      subItems: [
+        { name: '프롬프트 목록', path: '/prompts/list' },
+        { name: '새 프롬프트 생성', path: '/prompts/new' },
+        { name: '공유된 프롬프트', path: '/prompts/shared' }
+      ]
+    },
+    {
+      name: '프롬프트 라이브러리',
+      path: '/library',
+      icon: <LibrarySquare size={20} />,
+      subItems: [
+        { name: '카테고리별 보기', path: '/library/categories' },
+        { name: '태그별 보기', path: '/library/tags' },
+        { name: '템플릿 갤러리', path: '/library/templates' }
+      ]
+    },
+    {
+      name: '테스트 & 최적화',
+      path: '/testing',
+      icon: <Beaker size={20} />,
+      subItems: [
+        { name: 'A/B 테스트', path: '/testing/ab' },
+        { name: '성능 분석', path: '/testing/performance' },
+        { name: '테스트 데이터셋', path: '/testing/datasets' }
+      ]
+    },
+    {
+      name: '분석',
+      path: '/analytics',
+      icon: <BarChart2 size={20} />
+    },
+    {
+      name: '팀 관리',
+      path: '/team',
+      icon: <Users size={20} />
+    },
+    {
+      name: '설정',
+      path: '/settings',
+      icon: <Settings size={20} />,
+      subItems: [
+        { name: '계정 설정', path: '/settings/account' },
+        { name: 'API 연결', path: '/settings/api' },
+        { name: '알림 설정', path: '/settings/notifications' },
+        { name: '시스템 관리', path: '/settings/admin', adminOnly: true }
+      ]
+    }
+  ];
+
+  // 현재 경로가 메뉴 아이템의 경로와 일치하는지 확인
+  const isActiveMenu = (path: string) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  // 현재 경로가 서브메뉴 아이템의 경로와 일치하는지 확인
+  const isActiveSubMenu = (parentPath: string, itemPath: string) => {
+    return location.pathname === itemPath || 
+      (location.pathname.startsWith(parentPath) && itemPath.includes(parentPath));
+  };
+
+  // 서브메뉴 토글 함수
+  const toggleSubMenu = (menuName: string) => {
+    setExpandedMenu(expandedMenu === menuName ? null : menuName);
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {/* 모바일 사이드바 오버레이 */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
+      {/* 사이드바 */}
+      <div 
+        className={`
+          fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-0
+        `}
+      >
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+          <Link to="/" className="flex items-center">
+            <span className="text-xl font-semibold text-blue-600">프롬프트 엔지니어링</span>
+          </Link>
+          <button
+            className="p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="h-full overflow-y-auto py-4">
+          <ul className="space-y-1 px-3">
+            {menuItems.map((item) => (
+              <li key={item.name} className={item.adminOnly ? 'admin-only' : ''}>
+                {item.subItems ? (
+                  <div className="mb-1">
+                    <button
+                      onClick={() => toggleSubMenu(item.name)}
+                      className={`
+                        flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-md
+                        ${isActiveMenu(item.path) ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-100'}
+                      `}
+                    >
+                      <div className="flex items-center">
+                        <span className="mr-3">{item.icon}</span>
+                        <span>{item.name}</span>
+                      </div>
+                      {expandedMenu === item.name ? (
+                        <ChevronDown size={16} />
+                      ) : (
+                        <ChevronRight size={16} />
+                      )}
+                    </button>
+                    {expandedMenu === item.name && (
+                      <ul className="pl-10 mt-1 space-y-1">
+                        {item.subItems.map((subItem) => (
+                          <li key={subItem.name} className={subItem.adminOnly ? 'admin-only' : ''}>
+                            <Link
+                              to={subItem.path}
+                              className={`
+                                block px-3 py-1.5 text-sm rounded-md
+                                ${isActiveSubMenu(item.path, subItem.path) 
+                                  ? 'text-blue-600 bg-blue-50' 
+                                  : 'text-gray-600 hover:bg-gray-100'
+                                }
+                              `}
+                            >
+                              {subItem.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`
+                      flex items-center px-3 py-2 text-sm font-medium rounded-md
+                      ${isActiveMenu(item.path) ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-100'}
+                    `}
+                  >
+                    <span className="mr-3">{item.icon}</span>
+                    <span>{item.name}</span>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* 사이드바 하단 영역 */}
+        <div className="absolute bottom-0 w-full border-t border-gray-200 p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="text-blue-600 font-medium">KM</span>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-700">김민수</p>
+              <p className="text-xs text-gray-500">관리자</p>
+            </div>
+            <button className="ml-auto p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100">
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 메인 콘텐츠 영역 */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* 상단 헤더 */}
+        <header className="bg-white shadow-sm z-10">
+          <div className="flex items-center justify-between h-16 px-6">
+            <button
+              className="p-1 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
+            
+            <div className="flex items-center ml-auto space-x-4">
+              <span className="text-sm text-gray-700">도움말</span>
+              <span className="text-sm text-gray-700">알림</span>
+            </div>
+          </div>
+        </header>
+
+        {/* 메인 콘텐츠 */}
+        <main className="flex-1 overflow-auto p-6 bg-gray-50">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default MainLayout;

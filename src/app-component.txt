@@ -1,0 +1,71 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from './MainLayout';
+
+// 페이지 컴포넌트 임포트
+import Dashboard from './pages/Dashboard/prompt-dashboard';
+import PromptList from './pages/PromptManagement/prompt-list';
+import PromptEditor from './pages/PromptManagement/prompt-editor-basic';
+import ABTesting from './pages/Testing/ab-testing';
+import Analytics from './pages/Analytics/analytics-panel';
+import TeamManagement from './pages/Team/team-management-design';
+import AdminDashboard from './pages/Admin/admin-dashboard';
+
+// 아직 구현되지 않은 페이지를 위한 임시 컴포넌트
+const NotImplemented = ({ pageName }: { pageName: string }) => (
+  <div className="flex flex-col items-center justify-center h-full py-20">
+    <div className="text-6xl font-bold text-gray-200 mb-4">404</div>
+    <h1 className="text-2xl font-bold text-gray-700 mb-4">{pageName} 페이지</h1>
+    <p className="text-gray-500 mb-8">이 페이지는 아직 구현되지 않았습니다.</p>
+    <p className="text-blue-600 hover:underline">대시보드로 돌아가기</p>
+  </div>
+);
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <MainLayout>
+        <Routes>
+          {/* 대시보드 */}
+          <Route path="/" element={<Dashboard />} />
+          
+          {/* 프롬프트 관리 */}
+          <Route path="/prompts/list" element={<PromptList />} />
+          <Route path="/prompts/new" element={<PromptEditor />} />
+          <Route path="/prompts/shared" element={<NotImplemented pageName="공유된 프롬프트" />} />
+          <Route path="/prompts" element={<Navigate to="/prompts/list" replace />} />
+          
+          {/* 프롬프트 라이브러리 */}
+          <Route path="/library/categories" element={<NotImplemented pageName="카테고리별 보기" />} />
+          <Route path="/library/tags" element={<NotImplemented pageName="태그별 보기" />} />
+          <Route path="/library/templates" element={<NotImplemented pageName="템플릿 갤러리" />} />
+          <Route path="/library" element={<Navigate to="/library/categories" replace />} />
+          
+          {/* 테스트 & 최적화 */}
+          <Route path="/testing/ab" element={<ABTesting />} />
+          <Route path="/testing/performance" element={<NotImplemented pageName="성능 분석" />} />
+          <Route path="/testing/datasets" element={<NotImplemented pageName="테스트 데이터셋" />} />
+          <Route path="/testing" element={<Navigate to="/testing/ab" replace />} />
+          
+          {/* 분석 */}
+          <Route path="/analytics" element={<Analytics />} />
+          
+          {/* 팀 관리 */}
+          <Route path="/team" element={<TeamManagement />} />
+          
+          {/* 설정 */}
+          <Route path="/settings/account" element={<NotImplemented pageName="계정 설정" />} />
+          <Route path="/settings/api" element={<NotImplemented pageName="API 연결" />} />
+          <Route path="/settings/notifications" element={<NotImplemented pageName="알림 설정" />} />
+          <Route path="/settings/admin" element={<AdminDashboard />} />
+          <Route path="/settings" element={<Navigate to="/settings/account" replace />} />
+          
+          {/* 404 페이지 */}
+          <Route path="*" element={<NotImplemented pageName="찾을 수 없음" />} />
+        </Routes>
+      </MainLayout>
+    </Router>
+  );
+};
+
+export default App;
